@@ -55,4 +55,15 @@ command.
  * `cdk diff`        compare deployed stack with current state
  * `cdk docs`        open CDK documentation
 
+
+# DNS Name Servers Setup 
+
+```
+python3 -m venv .venv
+cdk boostrap
+cdk deploy
+aws route53 get-hosted-zone --id Z0xxxxxxxxxxxx | jq .DelegationSet.NameServers -r
+
+```
+
 Enjoy!
