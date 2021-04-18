@@ -1,1 +1,2 @@
+aws-cdk.aws_cloudfront_origins
 -e .

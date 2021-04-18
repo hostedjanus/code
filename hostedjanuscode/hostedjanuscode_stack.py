@@ -6,6 +6,10 @@ from aws_cdk import core as cdk
 # being updated to use `cdk`.  You may delete this import if you don't need it.
 from aws_cdk import core
 import aws_cdk.aws_route53 as route53
+import aws_cdk.aws_cloudfront as cloudfront
+import aws_cdk.aws_cloudfront_origins as origins
+import os.path
+from aws_cdk.aws_s3_assets import Asset as asset
 
 class HostedjanuscodeStack(cdk.Stack):
 
@@ -19,6 +23,20 @@ class HostedjanuscodeStack(cdk.Stack):
         zone_name="hostedjanus.com"
         )
 
+        # Artifacts
+        # Web page s3 Asset
+        file_asset = asset(self, 'WebPageAsset',
+        path=os.path.join("./webpage")
+        )
+
+        # CDN
+        # Creates a distribution for a S3 bucket.
+        hostedjanus_distribution = cloudfront.Distribution(self, "hostedjanusDist",
+            default_behavior=cloudfront.BehaviorOptions(origin=origins.S3Origin(file_asset.bucket))
+        )
+
+        route53.CnameRecord(self, "CloudFrontnameRecord", zone=hostedjanusZone,
+        record_name="www", domain_name=hostedjanus_distribution.domain_name)
 
         #Outputs
         #Not working because list is returned
